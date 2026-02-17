@@ -77,7 +77,7 @@ uint64_t readIObytes() {
 
   uint64_t sum = 0;
   for (std::string line; std::getline(stat, line); ) {
-    if (line.find("nvme") != std::string::npos) {
+    if (line.find("sda") != std::string::npos) {
       std::vector<std::string> strs;
       boost::split(strs, line, boost::is_any_of("\t "), boost::token_compress_on);
 
@@ -104,10 +104,10 @@ int main(int argc, char** argv) {
 
   struct stat sb;
   check(stat(argv[1], &sb) != -1);
-  //uint64_t fileSize = static_cast<uint64_t>(sb.st_size);
-  //if (fileSize == 0) ioctl(fd, BLKGETSIZE64, &fileSize);
+  uint64_t fileSize = static_cast<uint64_t>(sb.st_size);
+  if (fileSize == 0) ioctl(fd, BLKGETSIZE64, &fileSize);
 
-  uint64_t fileSize = 2ull * 1024 * 1024 * 1024 * 1024;
+  //uint64_t fileSize = 2ull * 1024 * 1024 * 1024 * 1024;
 
   char* p = (char*)mmap(nullptr, fileSize, PROT_READ, MAP_SHARED, fd, 0);
   assert(p != MAP_FAILED);
